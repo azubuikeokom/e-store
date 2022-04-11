@@ -1,38 +1,133 @@
-.App {
-  text-align: center;
+/*header..... */
+header{
+display: flex;
+justify-content: space-between;
+padding:1rem;
+background-color: #0E185F;
+margin-bottom: 1rem;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+a{
+  text-decoration: none;
+  color: aliceblue;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.logo{
+  cursor: pointer;
+  color: aliceblue;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.logo-s{
+  font-size: 2rem;
+  color: #890F0D;
+}
+.nav{
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  color: azure;
+}
+.login{
+  margin: 0 1rem;
+  cursor: pointer;
+}
+.cart{
+  margin: 0 1rem;
+  cursor: pointer;
+}
+.login:hover{
+  transform: scale(1.2);
+}
+.cart:hover{
+  transform: scale(1.2);
 }
 
-.App-link {
-  color: #61dafb;
+
+/* main */
+.container{
+  height: 100%;
+  
+}
+.products{
+  display: flex;
+  flex-wrap: wrap;
+}
+.product-card{
+  padding: 0 2rem;
+  font-weight: bold;
+}
+.image{
+  height: 20rem;
+}
+/* product page*/
+.product-container{
+  height: 100%;
+}
+.product-container .image{
+  height: 10%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+
+/* footer */
+footer{
+  display: flex;
+  justify-content: space-around;
+  background-color: #0E185F;
+  color: aliceblue;
+  margin-top: 1rem;
+}
+footer div{
+  padding: 2rem;
+}
+
+/* cart page */
+
+.cart-container{
+  display: flex;
+  justify-content: space-between;
+  height: 100vh;
+  padding: 1rem;
+}
+.cart-list{
+  width: 60%;
+}
+.add-to-cart{
+  background-color: #FFD365;
+  padding: 0 2rem;
+  margin: 0 2rem;
+  border-radius: 5px;
+  border: 0 solid;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.cart-item{
+  display: flex;
+  justify-content: space-between;
+  border-top: solid 1px rgb(70, 69, 69);
+  border-bottom: solid 1px rgb(70, 69, 69);
+  
+}
+.cart-item .image{
+  height: 100px;
+}
+.remove-from-cart{
+  background-color: #FD5D5D;
+  border: none;
+  border-radius: 5px;
+}
+.cart-checkout{
+  position: relative;
+  border-radius: 5px;
+  background-color: #C0D8C0;
+  padding: .5rem;
+  height: 100px;
+  width: 30%;
+
+}
+.checkout-button{
+  position:absolute;
+  background-color: #FFE162;
+  border: 0 solid;
+  border-radius: 5px;
+  width: 95%;
+  bottom: 1rem;
+}
+.checkout-button:hover{
+  background-color: #91C483;
 }
