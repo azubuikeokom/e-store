@@ -12,7 +12,7 @@ class CartPage extends Component {
     this.props.removeItem(id);
   };
   costReduce = (total, currentItem) => {
-    return (total += currentItem.price * currentItem.count_in_stock);
+    return (total += currentItem.price * currentItem.qty);
   };
 
   render() {

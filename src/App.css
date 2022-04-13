@@ -27,8 +27,25 @@ a{
   cursor: pointer;
 }
 .cart{
+  position: relative;
+}
+.cart-logo{
   margin: 0 1rem;
   cursor: pointer;
+}
+.cart-logo{
+  
+  height: 50px;
+}
+.cart-overlay{
+  position: absolute;
+  display: flex;
+  border-radius: 50%;
+  width: 25px;
+  right: 20px;
+  bottom: 10px;
+  justify-content: center;
+  background-color: #FD5D5D;
 }
 .login:hover{
   transform: scale(1.2);
@@ -95,6 +112,10 @@ footer div{
   border: 0 solid;
   font-size: 1.2rem;
   cursor: pointer;
+}
+.not-qty{
+  background-color: #adaca8;
+  cursor:none;
 }
 .cart-item{
   display: flex;

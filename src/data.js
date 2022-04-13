@@ -6,7 +6,8 @@ export const products=[
         brand:"Nike",
         price:10,
         rating:4,
-        count_in_stock:6
+        count_in_stock:6,
+        qty:0
     },
     {
         id:2,
@@ -15,7 +16,8 @@ export const products=[
         brand:"Nike",
         price:15,
         rating:4,
-        count_in_stock:0
+        count_in_stock:0,
+        qty:0
     },
     {
         id:3,
@@ -24,7 +26,8 @@ export const products=[
         brand:"Nike",
         price:20,
         rating:4,
-        count_in_stock:15
+        count_in_stock:15,
+        qty:0
     },
     {
         id:4,
@@ -33,7 +36,8 @@ export const products=[
         brand:"Nike",
         price:80,
         rating:4,
-        count_in_stock:74
+        count_in_stock:74,
+        qty:0
     },
     {
         id:5,
@@ -42,7 +46,8 @@ export const products=[
         brand:"Nike",
         price:60,
         rating:4,
-        count_in_stock:44
+        count_in_stock:44,
+        qty:0
     },
     {
         id:6,
@@ -51,6 +56,7 @@ export const products=[
         brand:"Nike",
         price:60,
         rating:4,
-        count_in_stock:90
+        count_in_stock:90,
+        qty:0
     },
 ]
