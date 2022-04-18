@@ -5,9 +5,25 @@ import { removeItem } from "../actions";
 class CartPage extends Component {
   constructor(props) {
     super(props);
-  
+    this.state={
+      qty:0
+    }
+    this.increment=this.increment.bind(this)
+    this.decrement=this.decrement.bind(this)
+    this.removeItem=this.removeItem.bind(this)
   }
-
+  increment(){
+    this.setState({qty:this.state.qty+1})
+  }
+  decrement(){
+    if(this.state.qty>0){
+      this.setState({qty:this.state.qty-1})
+    }
+    
+  }
+  removeItem(id){
+    this.props.removeItem(id)
+  }
   render() {
     return (
       <div className="cart-page">
@@ -29,13 +45,14 @@ class CartPage extends Component {
                   </div>
                   <div className="product-image-qty">
                     <div className="product-qty">
-                      <button>+</button>
-                      <div>1</div>
-                      <button>-</button>
+                      <button onClick={this.increment}>+</button>
+                      <div>{this.state.qty}</div>
+                      <button onClick={this.decrement}>-</button>
                     </div>
                     <div className="product-image-div">
                       <img src={item.gallery[0]} alt={item.name}/>
                     </div>
+                    <div className="remove-btn" onClick={()=>{this.removeItem(item.id)}}><div>X</div></div>
                   </div>
                 </div>
               );

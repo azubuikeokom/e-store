@@ -211,6 +211,14 @@ footer div{
   display: flex;
   padding: .3rem;
 }
+.remove-btn div{
+  border: 1px solid #FD5D5D;
+  border-radius: 5px;
+  margin: 0 1rem;
+  padding: .4rem;
+  cursor: pointer;
+  
+}
 .details{
   padding: 1rem;
 }
