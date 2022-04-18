@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { fetchData,setCurency } from "./actions";
+import { fetchData,setCurency,addItem } from "./actions";
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 class Header extends Component {
@@ -35,6 +35,9 @@ class Header extends Component {
               <li>KIDS</li>
             </ul>
           </nav>
+        </div>
+        <div>
+          <img src="/svg3.png" alt="logo"/>
         </div>
         <div className="nav">          
           <select value={this.state.symbol} onChange={this.onSelectChange} className="currency-switcher">
@@ -115,6 +118,8 @@ class Main extends Component {
     };
     this.updateCurrentCategory = this.updateCurrentCategory.bind(this);
     this.currencyCheck=this.currencyCheck.bind(this);
+    this.addToCart=this.addToCart.bind(this);
+    this.notInCart=this.notInCart.bind(this)
   }
   currencyCheck(item){
     //check currency in prices attribute of product
@@ -125,6 +130,21 @@ class Main extends Component {
   }
   updateCurrentCategory(category) {
     this.setState({ current: category });
+  }
+  addToCart (item) {
+    //check if item is already in cart
+    if (this.notInCart(item.id)) {
+      //dispatch to reducer
+      this.props.addItem(item);
+    } else {
+      return;
+    }
+  };
+  notInCart(id) {
+    const oldItem = this.props.cartItems.find((item) => item.id == id);
+    if (oldItem == undefined) {
+      return true;
+    } else return false;
   }
   componentDidMount() {
     const client = new ApolloClient({
@@ -197,7 +217,7 @@ class Main extends Component {
                 </Link>
                 <div>{item.name}</div>
                 <div>{this.props.currency}{this.currencyCheck(item).amount}</div>
-                <div className="add-to-cart-button">
+                <div className="add-to-cart-button" onClick={()=>{this.addToCart(item)}}>
                   <img src="/cart_image.png" alt="add-to-cart-button" />
                 </div>
               </div>
@@ -256,7 +276,8 @@ class SearchCategoryName extends Component {
 
 const actionCreators = {
   fetchData,
-  setCurency
+  setCurency,
+  addItem
 };
 const mapStateToProps1 = (state) => {
   //to be passed to wrapped Header props
@@ -265,7 +286,8 @@ const mapStateToProps1 = (state) => {
 const mapStateToProps2 = (state) => {
   return {
     category_state: state.dataState,
-    currency:state.currencyState.currency
+    currency:state.currencyState.currency,
+    cartItems: state.cart.items
   };
 };
 const headerComponet = connect(mapStateToProps1,actionCreators);
