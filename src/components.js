@@ -21,7 +21,7 @@ class Header extends Component {
   componentDidUpdate(prevProps,prevState){
     //test to avoid infinite loop
     if(prevState.symbol!=this.state.symbol){
-      this.props.setCurency(this.state.symbol.charAt(0))
+      this.props.setCurency(this.state.symbol)
     }
   }
   render() {
@@ -38,11 +38,11 @@ class Header extends Component {
         </div>
         <div className="nav">          
           <select value={this.state.symbol} onChange={this.onSelectChange} className="currency-switcher">
-            <option value={"$ USD"}>$ USD</option>
-            <option value={"£ GBP"}>£ GBP</option>
-            <option value={"A$ AUD"}>A$ AUD</option>
-            <option value={"¥ JPY"}>¥ JPY</option>
-            <option value={"₽ RUB"}>₽ RUB</option>
+            <option value={"$"}>$ USD</option>
+            <option value={"£"}>£ GBP</option>
+            <option value={"A$"}>A$ AUD</option>
+            <option value={"¥"}>¥ JPY</option>
+            <option value={"₽"}>₽ RUB</option>
           </select>
           <div className="cart">
             <div className="cart-logo">
@@ -102,15 +102,7 @@ class Header extends Component {
     );
   }
 }
-class Footer extends Component {
-  render() {
-    return (
-      <footer>
-        <div>All Rights Reserved</div>
-      </footer>
-    );
-  }
-}
+
 
 class Main extends Component {
   constructor(props) {
@@ -244,7 +236,7 @@ class SearchCategoryName extends Component {
     }
   }
   //dispatch here to prevent the default state's value from being sent over to the dispatch function
-  //that way we only send over what we entered
+  //that way we only send over what we enter
   componentDidUpdate(prevProps,prevState){
     if(prevState.value!=this.state.value){
       this.findCategory(this.state.value);
@@ -261,11 +253,7 @@ class SearchCategoryName extends Component {
     );
   }
 }
-class CartOverlay extends Component {
-  render() {
-    return <div className="overlay-container"></div>;
-  }
-}
+
 const actionCreators = {
   fetchData,
   setCurency
@@ -284,4 +272,4 @@ const headerComponet = connect(mapStateToProps1,actionCreators);
 const mainComponet = connect(mapStateToProps2, actionCreators);
 export const WrappedHeader = headerComponet(Header);
 export const WrappedMain = mainComponet(Main);
-export { Footer };
+
