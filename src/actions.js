@@ -11,3 +11,15 @@ export const removeItem=(id)=>{
         payload:id
     }
 }
+export const fetchData=(data)=>{
+    return{
+        type:"FETCH_SUCCESSFUL",
+        payload:data
+    }
+}
+export const setCurency=(symbol)=>{
+    return{
+        type:"SET_CURRENCY",
+        payload:symbol
+    }
+}

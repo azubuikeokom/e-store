@@ -5,49 +5,41 @@ import { removeItem } from "../actions";
 class CartPage extends Component {
   constructor(props) {
     super(props);
-    this.removeItem = this.removeItem.bind(this);
-    this.costReduce = this.costReduce.bind(this);
+  
   }
-  removeItem = (id) => {
-    this.props.removeItem(id);
-  };
-  costReduce = (total, currentItem) => {
-    return (total += currentItem.price * currentItem.qty);
-  };
 
   render() {
     return (
       <div className="cart-page">
-         <h1>Cart Page</h1>
+         <h1>CART</h1>
         <div className="cart-container">
           <div className="cart-list">
             {this.props.cartItems.map((item) => {
               return (
                 <div key={item.id} className="cart-item">
-                  <div>
-                    <img className="image" src={item.image} alt={item.name} />
-                    <div>{item.brand}</div>
-                    <div>${item.price}</div>
+                  <div className="details">
+                    <div className="details-name">
+                      <strong>{item.name}</strong>
+                    </div>
+                    <div className="details-price">$ {item.prices[0].amount}</div>
+                    <div className="details-sizes">
+                     <div>S</div>
+                     <div>M</div>
+                    </div>
                   </div>
-                  <div>
-                    <button
-                      className="remove-from-cart"
-                      key={item.id}
-                      onClick={() => this.removeItem(item.id)}
-                    >
-                      Remove
-                    </button>
+                  <div className="product-image-qty">
+                    <div className="product-qty">
+                      <button>+</button>
+                      <div>1</div>
+                      <button>-</button>
+                    </div>
+                    <div className="product-image-div">
+                      <img src={item.gallery[0]} alt={item.name}/>
+                    </div>
                   </div>
                 </div>
               );
             })}
-          </div>
-          <div className="cart-checkout ">
-            <div className="cart-total">
-              Total ${" "}
-              <span><strong>{this.props.cartItems.reduce(this.costReduce, 0)}</strong></span>
-            </div>
-            <button className="checkout-button">Procced to Checkout</button>
           </div>
         </div>
       </div>
@@ -55,7 +47,7 @@ class CartPage extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  return { cartItems: state.items };
+  return { cartItems: state.cart.items };
 };
 const actionCreators = {
   removeItem,
