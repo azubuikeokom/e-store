@@ -1,27 +1,25 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { fetchData,setCurency,addItem } from "./actions";
+import { fetchData, setCurrency, addItem } from "./actions";
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 class Header extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
-      symbol:""
-    }
-    this.onSelectChange=this.onSelectChange.bind(this)
-   
+    this.state = {
+      symbol: "",
+    };
+    this.onSelectChange = this.onSelectChange.bind(this);
   }
-  onSelectChange(e){
-    this.setState({symbol:e.target.value}) 
-    
+  onSelectChange(e) {
+    this.setState({ symbol: e.target.value });
   }
-  //dispatch action here to avoid sending the default state value 
-  componentDidUpdate(prevProps,prevState){
+  //dispatch action here to avoid sending the default state value
+  componentDidUpdate(prevProps, prevState) {
     //test to avoid infinite loop
-    if(prevState.symbol!=this.state.symbol){
-      this.props.setCurency(this.state.symbol)
+    if (prevState.symbol != this.state.symbol) {
+      this.props.setCurrency(this.state.symbol);
     }
   }
   render() {
@@ -37,10 +35,14 @@ class Header extends Component {
           </nav>
         </div>
         <div>
-          <img src="/svg3.png" alt="logo"/>
+          <img src="/svg3.png" alt="logo" />
         </div>
-        <div className="nav">          
-          <select value={this.state.symbol} onChange={this.onSelectChange} className="currency-switcher">
+        <div className="nav">
+          <select
+            value={this.state.symbol}
+            onChange={this.onSelectChange}
+            className="currency-switcher"
+          >
             <option value={"$"}>$ USD</option>
             <option value={"£"}>£ GBP</option>
             <option value={"A$"}>A$ AUD</option>
@@ -93,7 +95,12 @@ class Header extends Component {
               })}
             </div>
             <div className="cart-total">
-              <div><strong>Total</strong></div><div><strong>$xxxx</strong></div>
+              <div>
+                <strong>Total</strong>
+              </div>
+              <div>
+                <strong>$xxxx</strong>
+              </div>
             </div>
             <div className="cart-view-checkout">
               <div className="view-bag">VIEW BAG</div>
@@ -106,7 +113,6 @@ class Header extends Component {
   }
 }
 
-
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -115,23 +121,27 @@ class Main extends Component {
       current: {},
       loading: true,
       searching: false,
+     
+      
     };
     this.updateCurrentCategory = this.updateCurrentCategory.bind(this);
-    this.currencyCheck=this.currencyCheck.bind(this);
-    this.addToCart=this.addToCart.bind(this);
-    this.notInCart=this.notInCart.bind(this)
+    this.checkAmountInCurrency = this.checkAmountInCurrency.bind(this);
+    this.addToCart = this.addToCart.bind(this);
+    this.notInCart = this.notInCart.bind(this);
+ 
   }
-  currencyCheck(item){
+
+  checkAmountInCurrency(item) {
     //check currency in prices attribute of product
-   const price=item.prices.filter(price=>
-      price.currency.symbol==this.props.currency
-    )
+    const price = item.prices.filter(
+      (price) => price.currency.symbol == this.props.currency
+    );
     return price[0];
   }
   updateCurrentCategory(category) {
     this.setState({ current: category });
   }
-  addToCart (item) {
+  addToCart(item) {
     //check if item is already in cart
     if (this.notInCart(item.id)) {
       //dispatch to reducer
@@ -139,7 +149,7 @@ class Main extends Component {
     } else {
       return;
     }
-  };
+  }
   notInCart(id) {
     const oldItem = this.props.cartItems.find((item) => item.id == id);
     if (oldItem == undefined) {
@@ -175,6 +185,11 @@ class Main extends Component {
                 attributes {
                   name
                   type
+                  items {
+                    value
+                    displayValue
+                    id
+                  }
                 }
               }
             }
@@ -192,10 +207,8 @@ class Main extends Component {
         });
       });
   }
-  render() 
-  {
-    console.log(this.state.current)
-    console.log(`Main received ${this.props.currency}`)
+  render() {
+    console.log(this.state.current);
     return this.state.loading ? (
       <p>Loading...</p>
     ) : (
@@ -216,8 +229,46 @@ class Main extends Component {
                   />
                 </Link>
                 <div>{item.name}</div>
-                <div>{this.props.currency}{this.currencyCheck(item).amount}</div>
-                <div className="add-to-cart-button" onClick={()=>{this.addToCart(item)}}>
+                <div>
+                  {this.props.currency}
+                  {this.checkAmountInCurrency(item).amount}
+                </div>
+                <div className="attributes">
+                  {
+                    // some attributes are empty
+                    item.attributes.length > 0? 
+                      item.attributes.map((attribute) => {
+                          return attribute.type == "text"? 
+                              <div className="attribute">{                                                      
+                                 [<div className="attribute-name">{attribute.name}</div>].concat(attribute.items.map((item) => {
+                                return (
+                                  <div className="attribute-item" key={item.value} value={item.value}>
+                                    {item.value}
+                                  </div>
+                                );
+                              }))
+                            }</div>
+                            :
+                            <div className="attribute">{
+                            [<div className="attribute-name">{attribute.name}</div>].concat(attribute.items.map((item) => {
+                                return (
+                                  <div className="attribute-item"
+                                    key={item.value}
+                                    style={{ backgroundColor: item.value }}
+                                    value={item.value}
+                                  ></div>
+                                );
+                              })) }</div>                         
+                        })
+                      : ""
+                  }
+                </div>
+                <div
+                  className="add-to-cart-button"
+                  onClick={() => {
+                    this.addToCart(item);
+                  }}
+                >
                   <img src="/cart_image.png" alt="add-to-cart-button" />
                 </div>
               </div>
@@ -240,7 +291,6 @@ class SearchCategoryName extends Component {
   }
   handleChange(e) {
     this.setState({ value: e.target.value });
-    
   }
   //search for category entered in search field
   findCategory(term) {
@@ -257,8 +307,8 @@ class SearchCategoryName extends Component {
   }
   //dispatch here to prevent the default state's value from being sent over to the dispatch function
   //that way we only send over what we enter
-  componentDidUpdate(prevProps,prevState){
-    if(prevState.value!=this.state.value){
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.value != this.state.value) {
       this.findCategory(this.state.value);
     }
   }
@@ -276,8 +326,8 @@ class SearchCategoryName extends Component {
 
 const actionCreators = {
   fetchData,
-  setCurency,
-  addItem
+  setCurrency,
+  addItem,
 };
 const mapStateToProps1 = (state) => {
   //to be passed to wrapped Header props
@@ -286,12 +336,11 @@ const mapStateToProps1 = (state) => {
 const mapStateToProps2 = (state) => {
   return {
     category_state: state.dataState,
-    currency:state.currencyState.currency,
-    cartItems: state.cart.items
+    currency: state.currencyState.currency,
+    cartItems: state.cart.items,
   };
 };
-const headerComponet = connect(mapStateToProps1,actionCreators);
+const headerComponet = connect(mapStateToProps1, actionCreators);
 const mainComponet = connect(mapStateToProps2, actionCreators);
 export const WrappedHeader = headerComponet(Header);
 export const WrappedMain = mainComponet(Main);
-

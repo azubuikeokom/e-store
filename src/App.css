@@ -85,21 +85,42 @@ select{
 .product-card{
   position: relative;
   padding: 0 2rem;
-  font-weight: bold;
+  /* font-weight: bold; */
   border-radius: 5px;
-  box-shadow: 2px 1px 10px #807f7f;
-  margin: 2rem;
+  box-shadow: 2px 1px 10px #b1b0b0;
+  margin: 1rem;
   padding: 1rem;
+ 
 }
 .image{
-  height: 20rem;
+  height: 15rem;
   width: 15rem;
+}
+
+.attributes{
+  max-width: 15rem;
+}
+.attribute{
+  display: flex;
+}
+.attribute-name{
+  margin: .2rem;
+  padding: .2rem;
+  min-width: 1rem;
+  min-height: 1rem;
+}
+.attribute-item{
+  border: 1px solid black;
+  margin: .2rem;
+  padding: .2rem;
+  min-width: 1rem;
+  min-height: 1rem;
 }
 .add-to-cart-button{
   position: absolute;
   border-radius: 50%;
   left: 13rem;
-  bottom: 3rem;
+  top: 15rem;
   background-color: #51ff9a;
   padding: .5rem;
   cursor: pointer;

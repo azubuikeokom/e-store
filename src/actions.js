@@ -17,7 +17,7 @@ export const fetchData=(data)=>{
         payload:data
     }
 }
-export const setCurency=(symbol)=>{
+export const setCurrency=(symbol)=>{
     return{
         type:"SET_CURRENCY",
         payload:symbol

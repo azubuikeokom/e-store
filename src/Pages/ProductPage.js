@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { connect } from "react-redux";
-import { addItem } from "../actions";
+import { addItem,setCurrency } from "../actions";
 import { Link } from "react-router-dom";
 
 class ProductPage extends Component {
@@ -8,9 +8,18 @@ class ProductPage extends Component {
     super(props);
     this.product={};
     this.addToCart = this.addToCart.bind(this);
-  
+    this.state={
+      des_tag:{}
+    }
+    this.checkAmountInCurrency=this.checkAmountInCurrency.bind(this)
   }
-
+  checkAmountInCurrency(item){
+    //check currency in prices attribute of product
+   const price=item.prices.filter(price=>
+      price.currency.symbol==this.props.currency
+    )
+    return price[0];
+  }
   addToCart = (e) => {
     //check if item is already in cart
     if (this.notInCart(this.product.id)) {
@@ -26,10 +35,16 @@ class ProductPage extends Component {
       return true;
     } else return false;
   }
+  componentDidMount(){
+    this.setState({des_tag:window.document.getElementsByClassName("description")[0]})
+    
+  }
   render() {
+    
+   
     this.id = window.location.pathname.split("/")[2];
     this.product = this.props.products.find((item) => item.id == this.id);
-    console.log(this.props.cartItems)
+    console.log("cart",this.props.cartItems)
     return (
       <div className="product-container">
         <div className="product-thumbnails">
@@ -60,13 +75,15 @@ class ProductPage extends Component {
             </ul>
           </div>
           <div className="price">
-            <p>PRICE:</p>
+            <p><strong>PRICE: </strong>{this.props.currency}{this.checkAmountInCurrency(this.product).amount}</p>
           </div>
           <Link to={"/cart"}>
             <button onClick={this.addToCart}>ADD TO CART</button>
           </Link>
-          <div className="further-info">
-            {this.product.description}
+          <div className="description">
+            {
+             this.state.des_tag.innerHTML=this.product.description
+            }
           </div>
         </div>
       </div>
@@ -76,10 +93,12 @@ class ProductPage extends Component {
 const mapStateToProps = (state) => {
   return { 
     cartItems: state.cart.items,
-    products:state.dataState.allCategories.categories[0].products
+    products:state.dataState.allCategories.categories[0].products,
+    currency:state.currencyState.currency
    };
 };
 const actionCreators = {
   addItem,
+  setCurrency 
 };
 export default connect(mapStateToProps, actionCreators)(ProductPage);

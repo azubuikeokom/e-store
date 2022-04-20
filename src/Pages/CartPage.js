@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { connect } from "react-redux";
-import { removeItem } from "../actions";
+import { removeItem,setCurrency } from "../actions";
 
 class CartPage extends Component {
   constructor(props) {
@@ -11,7 +11,17 @@ class CartPage extends Component {
     this.increment=this.increment.bind(this)
     this.decrement=this.decrement.bind(this)
     this.removeItem=this.removeItem.bind(this)
+    this.checkAmountInCurrency=this.checkAmountInCurrency.bind(this)
+  
   }
+  checkAmountInCurrency(item){
+    //check currency in prices attribute of product
+   const price=item.prices.filter(price=>
+      price.currency.symbol==this.props.currency
+    )
+    return price[0];
+  }
+
   increment(){
     this.setState({qty:this.state.qty+1})
   }
@@ -20,6 +30,9 @@ class CartPage extends Component {
       this.setState({qty:this.state.qty-1})
     }
     
+  }
+  totalCost(total,currentItem){
+    return total+=currentItem.amount*currentItem.qty
   }
   removeItem(id){
     this.props.removeItem(id)
@@ -37,7 +50,7 @@ class CartPage extends Component {
                     <div className="details-name">
                       <strong>{item.name}</strong>
                     </div>
-                    <div className="details-price">$ {item.prices[0].amount}</div>
+                    <div className="details-price">{this.props.currency} {this.checkAmountInCurrency(item).amount}</div>
                     <div className="details-sizes">
                      <div>S</div>
                      <div>M</div>
@@ -64,10 +77,14 @@ class CartPage extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  return { cartItems: state.cart.items };
+  return { 
+    cartItems: state.cart.items,
+    currency:state.currencyState.currency
+   };
 };
 const actionCreators = {
   removeItem,
+  setCurrency,
 };
 
 export default connect(mapStateToProps, actionCreators)(CartPage);
