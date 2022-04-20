@@ -155,15 +155,9 @@ select{
 }
 .product-details{
   padding-left: 6rem;
+  max-width: 22rem;
 }
-.sizes li{
-  border: 1px solid black;
-  margin: 0 .5rem;
-  
-}
-.sizes li:hover{
-  background-color: black;
-}
+
 .product-details button{
   width: 100%;
   height: 3rem;
@@ -174,7 +168,10 @@ select{
 .product-details button:hover{
   background-color:#016b2d ;
 }
-
+.description{
+ width: 100%;
+ overflow: hidden; 
+}
 
 /* footer */
 footer{
