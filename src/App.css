@@ -99,22 +99,33 @@ select{
 
 .attributes{
   max-width: 15rem;
+  font-size: 1rem;
 }
 .attribute{
   display: flex;
 }
 .attribute-name{
-  margin: .2rem;
-  padding: .2rem;
+  margin-right: .2rem;
+  padding: .2rem 0;
   min-width: 1rem;
-  min-height: 1rem;
+  /* min-height: 1rem; */
 }
 .attribute-item{
   border: 1px solid black;
   margin: .2rem;
-  padding: .2rem;
+  padding: 0 .1rem;
   min-width: 1rem;
-  min-height: 1rem;
+  min-height: 1rem; 
+}
+.color-attribute{
+  display: flex;
+  padding-top: .3rem;
+}
+.color-item{
+  width: .8rem;
+  height: 1rem;
+  border: 1px solid rgb(185, 183, 183);
+  border-radius: 5px;
 }
 .add-to-cart-button{
   position: absolute;

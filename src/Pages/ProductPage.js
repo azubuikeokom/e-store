@@ -85,39 +85,20 @@ class ProductPage extends Component {
                 ? this.product.attributes.map((attribute) => {
                     return attribute.type == "text" ? (
                       <div className="attribute">
-                        {[
-                          <div className="attribute-name">
-                            {attribute.name}
-                          </div>,
-                        ].concat(
-                          attribute.items.map((item) => {
-                            return (
-                              <div
-                                className="attribute-item"
-                                key={item.value}
-                                value={item.value}
-                              >
-                                {item.value}
-                              </div>
-                            );
-                          })
+                        {[<div className="attribute-name">{attribute.name}</div>].concat(attribute.items.map((item) => {
+                            return (<div key={item.value}><label ><input  type="radio" name={attribute.name} value={item.value}/>
+                            {item.value}</label></div>);
+                         })
                         )}
                       </div>
                     ) : (
-                      <div className="attribute">
-                        {[
-                          <div className="attribute-name">
-                            {attribute.name}
-                          </div>,
-                        ].concat(
+                      <div className="attribute">{[<div className="attribute-name">{attribute.name}</div>].concat(
                           attribute.items.map((item) => {
                             return (
-                              <div
-                                className="attribute-item"
-                                key={item.value}
-                                style={{ backgroundColor: item.value }}
-                                value={item.value}
-                              ></div>
+                              <div className="color-attribute"  key={item.value}>
+                                    <input type={"radio"} name={attribute.name} value={item.value}/>
+                                    <div className="color-item" style={{ backgroundColor: item.value }} ></div>
+                                  </div>
                             );
                           })
                         )}

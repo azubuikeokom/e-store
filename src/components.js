@@ -120,15 +120,16 @@ class Main extends Component {
       defaultCategory: {},
       current: {},
       loading: true,
-      searching: false,
-     
-      
+      searching: false,    
     };
     this.updateCurrentCategory = this.updateCurrentCategory.bind(this);
     this.checkAmountInCurrency = this.checkAmountInCurrency.bind(this);
     this.addToCart = this.addToCart.bind(this);
     this.notInCart = this.notInCart.bind(this);
- 
+    this.getAttribute=this.getAttribute.bind(this)
+  }
+  getAttribute(){
+
   }
 
   checkAmountInCurrency(item) {
@@ -228,8 +229,8 @@ class Main extends Component {
                     className="image"
                   />
                 </Link>
-                <div>{item.name}</div>
-                <div>
+                <div><strong>{item.name}</strong></div>
+                <div><strong>Price: </strong>
                   {this.props.currency}
                   {this.checkAmountInCurrency(item).amount}
                 </div>
@@ -239,24 +240,19 @@ class Main extends Component {
                     item.attributes.length > 0? 
                       item.attributes.map((attribute) => {
                           return attribute.type == "text"? 
-                              <div className="attribute">{                                                      
+                              <div className="attribute" >{                                                      
                                  [<div className="attribute-name">{attribute.name}</div>].concat(attribute.items.map((item) => {
-                                return (
-                                  <div className="attribute-item" key={item.value} value={item.value}>
-                                    {item.value}
-                                  </div>
-                                );
+                                return (<div key={item.value}><label ><input  type="radio" name={attribute.name} value={item.value}/>
+                                      {item.value}</label></div>);
                               }))
                             }</div>
                             :
                             <div className="attribute">{
                             [<div className="attribute-name">{attribute.name}</div>].concat(attribute.items.map((item) => {
-                                return (
-                                  <div className="attribute-item"
-                                    key={item.value}
-                                    style={{ backgroundColor: item.value }}
-                                    value={item.value}
-                                  ></div>
+                                return (<div className="color-attribute"  key={item.value}>
+                                    <input type={"radio"} name={attribute.name} value={item.value}/>
+                                    <div className="color-item" style={{ backgroundColor: item.value }} ></div>
+                                  </div>
                                 );
                               })) }</div>                         
                         })
