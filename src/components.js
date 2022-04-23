@@ -292,6 +292,7 @@ class SearchCategoryName extends Component {
   }
 }
 
+
 const actionCreators = {
   fetchData,
   setCurrency,

@@ -7,26 +7,32 @@ class CartPage extends Component {
     super(props);
     this.state = {
       qty: 0,
-      cartItem_id:0
+      cartItem_id: 0,
     };
     this.increment = this.increment.bind(this);
     this.decrement = this.decrement.bind(this);
     this.removeItem = this.removeItem.bind(this);
-    this.setState_id=this.setState_id.bind(this);
+    this.setState_id = this.setState_id.bind(this);
     this.checkAmountInCurrency = this.checkAmountInCurrency.bind(this);
-    this.selectAttribute=this.selectAttribute.bind(this)
+    this.selectAttribute = this.selectAttribute.bind(this);
+    this.totalCost=this.totalCost.bind(this);
   }
-  setState_id(item_id){
-    this.setState({cartItem_id:item_id})
+  setState_id(item_id) {
+    this.setState({ cartItem_id: item_id });
   }
-  selectAttribute(attribute_name,item){
-    this.props.orderItems.map(order_item=>{
-        if(this.state.cartItem_id==order_item.id){
-          order_item[attribute_name]=item.value
-        }
-        return order_item
-    })
-    console.log("modified",this.props.orderItems)
+  selectAttribute(attribute_name, item) {
+    //iterate over all order items
+    this.props.orderItems.map((order_item) => {
+      //check if cart-item's id is same with order-items id
+      if (this.state.cartItem_id == order_item.id) {
+        order_item.attributes.map((attrib) => {
+          if (attribute_name in attrib) {
+            attrib[attribute_name] = item.value;
+          }
+        });
+      }
+      return order_item;
+    });
   }
   checkAmountInCurrency(item) {
     //check currency in prices attribute of product
@@ -45,13 +51,14 @@ class CartPage extends Component {
     }
   }
   totalCost(total, currentItem) {
-    return (total += currentItem.amount * currentItem.qty);
+    return (total += currentItem.price * currentItem.qty);
   }
   removeItem(id) {
     this.props.removeItem(id);
   }
   render() {
-    //console.log(this.props.orderItems)
+    console.log(this.props.cartItems);
+    console.log(this.props.orderItems);
     return (
       <div className="cart-page">
         <h1>CART</h1>
@@ -59,9 +66,13 @@ class CartPage extends Component {
           <div className="cart-list">
             {this.props.cartItems.map((item) => {
               return (
-                <div key={item.id} className="cart-item"  onMouseEnter={(e)=>{
-                  this.setState_id(item.id)
-                }}>
+                <div
+                  key={item.id}
+                  className="cart-item"
+                  onMouseEnter={(e) => {
+                    this.setState_id(item.id);
+                  }}
+                >
                   <div className="details">
                     <div className="details-name">
                       <strong>{item.name}</strong>
@@ -87,9 +98,14 @@ class CartPage extends Component {
                                         <div
                                           className="text-item"
                                           key={item.value}
-                                          tabIndex={index} onClick={(e)=>{
-                                            this.selectAttribute(attribute.name,item)
-                                          }}>
+                                          tabIndex={index}
+                                          onClick={(e) => {
+                                            this.selectAttribute(
+                                              attribute.name,
+                                              item
+                                            );
+                                          }}
+                                        >
                                           {item.value}
                                         </div>
                                       );
@@ -112,8 +128,11 @@ class CartPage extends Component {
                                           style={{
                                             backgroundColor: item.value,
                                           }}
-                                          onClick={(e)=>{
-                                            this.selectAttribute(attribute.name,item)
+                                          onClick={(e) => {
+                                            this.selectAttribute(
+                                              attribute.name,
+                                              item
+                                            );
                                           }}
                                         ></div>
                                       );
@@ -149,6 +168,24 @@ class CartPage extends Component {
             })}
           </div>
         </div>
+        <div className="cart-check-out">
+          <div>
+            <span className="cart-total-row-name">Tax: </span>
+            <span className="cart-total-row-value">{this.props.currency} </span>
+          </div>
+          <div>
+            <span className="cart-total-row-name">Qty:</span>
+            <span className="cart-total-row-value"></span>
+          </div>
+          <div>
+            <span className="cart-total-row-name">Total: </span>
+            <span className="cart-total-row-value">
+              {this.props.currency}{this.props.orderItems.reduce(this.totalCost,0)
+            }
+            </span>
+          </div>
+          <button className="order-btn">ORDER</button>
+        </div>
       </div>
     );
   }
@@ -156,7 +193,7 @@ class CartPage extends Component {
 const mapStateToProps = (state) => {
   return {
     cartItems: state.cart.items,
-    orderItems:state.cart.orderItems,
+    orderItems: state.cart.orderItems,
     currency: state.currencyState.currency,
   };
 };

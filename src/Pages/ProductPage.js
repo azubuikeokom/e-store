@@ -8,39 +8,52 @@ class ProductPage extends Component {
     super(props);
     this.state = {
       des_tag: {},
-      image:""
+      image: "",
+      attributes_no: 0,
     };
-    this.cartProduct={
-      product:{},
-      orderProduct:{
-        price:0,
-        name:"",
-        brand:"",
-        id:"",
-        image:"",
-        currency:"",
-        qty:0
-      }
-
-
+    this.cartProduct = {
+      product: {},
+      orderProduct: {
+        attributes: [],
+        price: 0,
+        name: "",
+        brand: "",
+        id: "",
+        image: "",
+        currency: "",
+        qty: 0,
+      },
     };
     this.id = window.location.pathname.split("/")[2];
-    this.cartProduct.product = this.props.products.find((item) => item.id == this.id);
+    this.cartProduct.product = this.props.products.find(
+      (item) => item.id == this.id
+    );
     this.addToCart = this.addToCart.bind(this);
     this.checkAmountInCurrency = this.checkAmountInCurrency.bind(this);
-    this.handleImageClick=this.handleImageClick.bind(this)
-    this.selectAttribute=this.selectAttribute.bind(this)
+    this.handleImageClick = this.handleImageClick.bind(this);
+    this.selectAttribute = this.selectAttribute.bind(this);
+    this.getAttributesCount = this.getAttributesCount.bind(this);
   }
-  selectAttribute(attribute_name,item){
-    this.cartProduct.orderProduct[attribute_name]=item.value;
-    this.cartProduct.orderProduct.name=this.cartProduct.product.name;
-    this.cartProduct.orderProduct.brand=this.cartProduct.product.brand;
-    this.cartProduct.orderProduct.price=this.checkAmountInCurrency(this.cartProduct.product).amount;
-    this.cartProduct.orderProduct.currency=this.props.currency;
-    this.cartProduct.orderProduct.id=this.cartProduct.product.id;
-    this.cartProduct.orderProduct.image=this.cartProduct.product.gallery[0];
-    console.log(this.cartProduct)
-   
+  getAttributesCount() {
+    this.setState({
+      attributes_no: this.cartProduct.product.attributes.length,
+    });
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.attributes_no != this.state.attributes_no) {
+      console.log("attribute number", this.state.attributes_no);
+    }
+  }
+  selectAttribute(attribute_name, item) {
+    this.cartProduct.orderProduct.attributes.push({
+      [attribute_name]: item.value,
+    });
+    this.cartProduct.orderProduct.name = this.cartProduct.product.name;
+    this.cartProduct.orderProduct.brand = this.cartProduct.product.brand;
+    this.cartProduct.orderProduct.price = this.checkAmountInCurrency(this.cartProduct.product).amount;
+    this.cartProduct.orderProduct.currency = this.props.currency;
+    this.cartProduct.orderProduct.id = this.cartProduct.product.id;
+    this.cartProduct.orderProduct.image = this.cartProduct.product.gallery[0];
   }
   checkAmountInCurrency(item) {
     //check currency in prices attribute of product
@@ -49,18 +62,21 @@ class ProductPage extends Component {
     );
     return price[0];
   }
-  handleImageClick(e){
-    this.setState({image:e.target.src})
+  handleImageClick(e) {
+    this.setState({ image: e.target.src });
   }
   addToCart = (e) => {
-
-    //check if item is already in cart
-    if (this.notInCart(this.cartProduct.product.id)) {
-      //dispatch to reducer
-      this.props.addItem(this.cartProduct);
-    } else {
-      return;
-    }
+    if(
+      this.cartProduct.product.attributes.length ==
+      this.cartProduct.orderProduct.attributes.length)
+      if (this.notInCart(this.cartProduct.product.id)) {
+        //check if item is already in cart
+        //dispatch to reducer
+        this.cartProduct.orderProduct.qty=1;
+        this.props.addItem(this.cartProduct);
+      } else {
+        return;
+      }
   };
   notInCart(id) {
     const oldItem = this.props.cartItems.find((item) => item.id == id);
@@ -71,23 +87,25 @@ class ProductPage extends Component {
   componentDidMount() {
     this.setState({
       des_tag: window.document.getElementsByClassName("description")[0],
-      image:this.cartProduct.product.gallery[0]
+      image: this.cartProduct.product.gallery[0],
     });
-    
+    this.getAttributesCount();
   }
   render() {
     return (
       <div className="product-container">
         <div className="product-thumbnails">
-          {this.cartProduct.product.gallery.map((image,index) => {
-            return <div key={index} className="thumbnail-1" >
-              <img 
-                className="product-details-image"
-                src={image}
-                alt={this.cartProduct.product.name}
-                onClick={this.handleImageClick}
-              />
-            </div>;
+          {this.cartProduct.product.gallery.map((image, index) => {
+            return (
+              <div key={index} className="thumbnail-1">
+                <img
+                  className="product-details-image"
+                  src={image}
+                  alt={this.cartProduct.product.name}
+                  onClick={this.handleImageClick}
+                />
+              </div>
+            );
           })}
         </div>
         <div className="product">
@@ -107,34 +125,56 @@ class ProductPage extends Component {
             {
               // some attributes are empty
               this.cartProduct.product.attributes.length > 0
-                ? this.cartProduct.product.attributes.map((attribute,index) => {
-                    return attribute.type == "text" ? (
-                      <div key={index} className="attribute">
-                        {[<div className="attribute-name">{attribute.name}</div>]
-                        .concat(attribute.items.map((item,index) => {
-                            return (<div className="text-item" key={item.value} tabIndex={index} 
-                              onClick={(e)=>{
-                              this.selectAttribute(attribute.name,item)
-                            }}>{item.value}</div>);
-                         })
-                        )}
-                      </div>
-                    ) : (
-                      <div key={index} className="attribute">{[<div className="attribute-name">{attribute.name}</div>]
-                      .concat(
-                          attribute.items.map((item,index) => {
-                            return (
-                                    <div key={item.value} className="color-item" tabIndex={index} 
-                                    style={{ backgroundColor: item.value }} onClick={(e)=>{
-                                      this.selectAttribute(attribute.name,item)
-                                    }}>
-                                    </div>                                 
-                            );
-                          })
-                        )}
-                      </div>
-                    );
-                  })
+                ? this.cartProduct.product.attributes.map(
+                    (attribute, index) => {
+                      return attribute.type == "text" ? (
+                        <div key={index} className="attribute">
+                          {[
+                            <div className="attribute-name">
+                              {attribute.name}
+                            </div>,
+                          ].concat(
+                            attribute.items.map((item, index) => {
+                              return (
+                                <div
+                                  className="text-item"
+                                  key={item.value}
+                                  tabIndex={index}
+                                  onClick={(e) => {
+                                    this.selectAttribute(attribute.name, item);
+                                  }}
+                                >
+                                  {item.value}
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
+                      ) : (
+                        <div key={index} className="attribute">
+                          {[
+                            <div className="attribute-name">
+                              {attribute.name}
+                            </div>,
+                          ].concat(
+                            attribute.items.map((item, index) => {
+                              return (
+                                <div
+                                  key={item.value}
+                                  className="color-item"
+                                  tabIndex={index}
+                                  style={{ backgroundColor: item.value }}
+                                  onClick={(e) => {
+                                    this.selectAttribute(attribute.name, item);
+                                  }}
+                                ></div>
+                              );
+                            })
+                          )}
+                        </div>
+                      );
+                    }
+                  )
                 : ""
             }
           </div>
@@ -149,7 +189,10 @@ class ProductPage extends Component {
             <button onClick={this.addToCart}>ADD TO CART</button>
           </Link>
           <div className="description">
-            {(this.state.des_tag.innerHTML = this.cartProduct.product.description)}
+            {
+              (this.state.des_tag.innerHTML =
+                this.cartProduct.product.description)
+            }
           </div>
         </div>
       </div>
