@@ -1,59 +1,129 @@
 import { Component } from "react";
 import { connect } from "react-redux";
-import { removeItem,setCurrency } from "../actions";
+import { removeItem, setCurrency } from "../actions";
 
 class CartPage extends Component {
   constructor(props) {
     super(props);
-    this.state={
-      qty:0
-    }
-    this.increment=this.increment.bind(this)
-    this.decrement=this.decrement.bind(this)
-    this.removeItem=this.removeItem.bind(this)
-    this.checkAmountInCurrency=this.checkAmountInCurrency.bind(this)
-  
+    this.state = {
+      qty: 0,
+      cartItem_id:0
+    };
+    this.increment = this.increment.bind(this);
+    this.decrement = this.decrement.bind(this);
+    this.removeItem = this.removeItem.bind(this);
+    this.setState_id=this.setState_id.bind(this);
+    this.checkAmountInCurrency = this.checkAmountInCurrency.bind(this);
+    this.selectAttribute=this.selectAttribute.bind(this)
   }
-  checkAmountInCurrency(item){
+  setState_id(item_id){
+    this.setState({cartItem_id:item_id})
+  }
+  selectAttribute(attribute_name,item){
+    this.props.orderItems.map(order_item=>{
+        if(this.state.cartItem_id==order_item.id){
+          order_item[attribute_name]=item.value
+        }
+        return order_item
+    })
+    console.log("modified",this.props.orderItems)
+  }
+  checkAmountInCurrency(item) {
     //check currency in prices attribute of product
-   const price=item.prices.filter(price=>
-      price.currency.symbol==this.props.currency
-    )
+    const price = item.prices.filter(
+      (price) => price.currency.symbol == this.props.currency
+    );
     return price[0];
   }
 
-  increment(){
-    this.setState({qty:this.state.qty+1})
+  increment() {
+    this.setState({ qty: this.state.qty + 1 });
   }
-  decrement(){
-    if(this.state.qty>0){
-      this.setState({qty:this.state.qty-1})
+  decrement() {
+    if (this.state.qty > 0) {
+      this.setState({ qty: this.state.qty - 1 });
     }
-    
   }
-  totalCost(total,currentItem){
-    return total+=currentItem.amount*currentItem.qty
+  totalCost(total, currentItem) {
+    return (total += currentItem.amount * currentItem.qty);
   }
-  removeItem(id){
-    this.props.removeItem(id)
+  removeItem(id) {
+    this.props.removeItem(id);
   }
   render() {
+    //console.log(this.props.orderItems)
     return (
       <div className="cart-page">
-         <h1>CART</h1>
+        <h1>CART</h1>
         <div className="cart-container">
           <div className="cart-list">
             {this.props.cartItems.map((item) => {
               return (
-                <div key={item.id} className="cart-item">
+                <div key={item.id} className="cart-item"  onMouseEnter={(e)=>{
+                  this.setState_id(item.id)
+                }}>
                   <div className="details">
                     <div className="details-name">
                       <strong>{item.name}</strong>
                     </div>
-                    <div className="details-price">{this.props.currency} {this.checkAmountInCurrency(item).amount}</div>
-                    <div className="details-sizes">
-                     <div>S</div>
-                     <div>M</div>
+                    <div className="details-price">
+                      {this.props.currency}{" "}
+                      {this.checkAmountInCurrency(item).amount}
+                    </div>
+                    <div className="attributes">
+                      {
+                        // some attributes are empty
+                        item.attributes.length > 0
+                          ? item.attributes.map((attribute) => {
+                              return attribute.type == "text" ? (
+                                <div className="attribute">
+                                  {[
+                                    <div className="attribute-name">
+                                      {attribute.name}
+                                    </div>,
+                                  ].concat(
+                                    attribute.items.map((item, index) => {
+                                      return (
+                                        <div
+                                          className="text-item"
+                                          key={item.value}
+                                          tabIndex={index} onClick={(e)=>{
+                                            this.selectAttribute(attribute.name,item)
+                                          }}>
+                                          {item.value}
+                                        </div>
+                                      );
+                                    })
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="attribute">
+                                  {[
+                                    <div className="attribute-name">
+                                      {attribute.name}
+                                    </div>,
+                                  ].concat(
+                                    attribute.items.map((item, index) => {
+                                      return (
+                                        <div
+                                          key={item.value}
+                                          className="color-item"
+                                          tabIndex={index}
+                                          style={{
+                                            backgroundColor: item.value,
+                                          }}
+                                          onClick={(e)=>{
+                                            this.selectAttribute(attribute.name,item)
+                                          }}
+                                        ></div>
+                                      );
+                                    })
+                                  )}
+                                </div>
+                              );
+                            })
+                          : ""
+                      }
                     </div>
                   </div>
                   <div className="product-image-qty">
@@ -63,9 +133,16 @@ class CartPage extends Component {
                       <button onClick={this.decrement}>-</button>
                     </div>
                     <div className="product-image-div">
-                      <img src={item.gallery[0]} alt={item.name}/>
+                      <img src={item.gallery[0]} alt={item.name} />
                     </div>
-                    <div className="remove-btn" onClick={()=>{this.removeItem(item.id)}}><div>X</div></div>
+                    <div
+                      className="remove-btn"
+                      onClick={() => {
+                        this.removeItem(item.id);
+                      }}
+                    >
+                      <div>X</div>
+                    </div>
                   </div>
                 </div>
               );
@@ -77,10 +154,11 @@ class CartPage extends Component {
   }
 }
 const mapStateToProps = (state) => {
-  return { 
+  return {
     cartItems: state.cart.items,
-    currency:state.currencyState.currency
-   };
+    orderItems:state.cart.orderItems,
+    currency: state.currencyState.currency,
+  };
 };
 const actionCreators = {
   removeItem,

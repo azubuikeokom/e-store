@@ -6,14 +6,41 @@ import { Link } from "react-router-dom";
 class ProductPage extends Component {
   constructor(props) {
     super(props);
-    this.product = {};
-    this.addToCart = this.addToCart.bind(this);
     this.state = {
       des_tag: {},
       image:""
     };
+    this.cartProduct={
+      product:{},
+      orderProduct:{
+        price:0,
+        name:"",
+        brand:"",
+        id:"",
+        image:"",
+        currency:"",
+        qty:0
+      }
+
+
+    };
+    this.id = window.location.pathname.split("/")[2];
+    this.cartProduct.product = this.props.products.find((item) => item.id == this.id);
+    this.addToCart = this.addToCart.bind(this);
     this.checkAmountInCurrency = this.checkAmountInCurrency.bind(this);
     this.handleImageClick=this.handleImageClick.bind(this)
+    this.selectAttribute=this.selectAttribute.bind(this)
+  }
+  selectAttribute(attribute_name,item){
+    this.cartProduct.orderProduct[attribute_name]=item.value;
+    this.cartProduct.orderProduct.name=this.cartProduct.product.name;
+    this.cartProduct.orderProduct.brand=this.cartProduct.product.brand;
+    this.cartProduct.orderProduct.price=this.checkAmountInCurrency(this.cartProduct.product).amount;
+    this.cartProduct.orderProduct.currency=this.props.currency;
+    this.cartProduct.orderProduct.id=this.cartProduct.product.id;
+    this.cartProduct.orderProduct.image=this.cartProduct.product.gallery[0];
+    console.log(this.cartProduct)
+   
   }
   checkAmountInCurrency(item) {
     //check currency in prices attribute of product
@@ -24,13 +51,13 @@ class ProductPage extends Component {
   }
   handleImageClick(e){
     this.setState({image:e.target.src})
-    console.log(this.state.image)
   }
   addToCart = (e) => {
+
     //check if item is already in cart
-    if (this.notInCart(this.product.id)) {
+    if (this.notInCart(this.cartProduct.product.id)) {
       //dispatch to reducer
-      this.props.addItem(this.product);
+      this.props.addItem(this.cartProduct);
     } else {
       return;
     }
@@ -44,22 +71,20 @@ class ProductPage extends Component {
   componentDidMount() {
     this.setState({
       des_tag: window.document.getElementsByClassName("description")[0],
-      image:this.product.gallery[0]
+      image:this.cartProduct.product.gallery[0]
     });
     
   }
   render() {
-    this.id = window.location.pathname.split("/")[2];
-    this.product = this.props.products.find((item) => item.id == this.id);
     return (
       <div className="product-container">
         <div className="product-thumbnails">
-          {this.product.gallery.map((image) => {
-            return <div className="thumbnail-1" >
-              <img
+          {this.cartProduct.product.gallery.map((image,index) => {
+            return <div key={index} className="thumbnail-1" >
+              <img 
                 className="product-details-image"
                 src={image}
-                alt={this.product.name}
+                alt={this.cartProduct.product.name}
                 onClick={this.handleImageClick}
               />
             </div>;
@@ -69,36 +94,41 @@ class ProductPage extends Component {
           <img
             className="product-details-image"
             src={this.state.image}
-            alt={this.product.name}
+            alt={this.cartProduct.product.name}
           />
         </div>
         <div className="product-details">
           <div className="product-name">
             <p>
-              <strong>{this.product.name}</strong>
+              <strong>{this.cartProduct.product.name}</strong>
             </p>
           </div>
           <div className="attributes">
             {
               // some attributes are empty
-              this.product.attributes.length > 0
-                ? this.product.attributes.map((attribute) => {
+              this.cartProduct.product.attributes.length > 0
+                ? this.cartProduct.product.attributes.map((attribute,index) => {
                     return attribute.type == "text" ? (
-                      <div className="attribute">
-                        {[<div className="attribute-name">{attribute.name}</div>].concat(attribute.items.map((item) => {
-                            return (<div key={item.value}><label ><input  type="radio" name={attribute.name} value={item.value}/>
-                            {item.value}</label></div>);
+                      <div key={index} className="attribute">
+                        {[<div className="attribute-name">{attribute.name}</div>]
+                        .concat(attribute.items.map((item,index) => {
+                            return (<div className="text-item" key={item.value} tabIndex={index} 
+                              onClick={(e)=>{
+                              this.selectAttribute(attribute.name,item)
+                            }}>{item.value}</div>);
                          })
                         )}
                       </div>
                     ) : (
-                      <div className="attribute">{[<div className="attribute-name">{attribute.name}</div>].concat(
-                          attribute.items.map((item) => {
+                      <div key={index} className="attribute">{[<div className="attribute-name">{attribute.name}</div>]
+                      .concat(
+                          attribute.items.map((item,index) => {
                             return (
-                              <div className="color-attribute"  key={item.value}>
-                                    <input type={"radio"} name={attribute.name} value={item.value}/>
-                                    <div className="color-item" style={{ backgroundColor: item.value }} ></div>
-                                  </div>
+                                    <div key={item.value} className="color-item" tabIndex={index} 
+                                    style={{ backgroundColor: item.value }} onClick={(e)=>{
+                                      this.selectAttribute(attribute.name,item)
+                                    }}>
+                                    </div>                                 
                             );
                           })
                         )}
@@ -112,14 +142,14 @@ class ProductPage extends Component {
             <p>
               <strong>PRICE: </strong>
               {this.props.currency}
-              {this.checkAmountInCurrency(this.product).amount}
+              {this.checkAmountInCurrency(this.cartProduct.product).amount}
             </p>
           </div>
           <Link to={"/cart"}>
             <button onClick={this.addToCart}>ADD TO CART</button>
           </Link>
           <div className="description">
-            {(this.state.des_tag.innerHTML = this.product.description)}
+            {(this.state.des_tag.innerHTML = this.cartProduct.product.description)}
           </div>
         </div>
       </div>

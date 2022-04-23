@@ -126,10 +126,7 @@ class Main extends Component {
     this.checkAmountInCurrency = this.checkAmountInCurrency.bind(this);
     this.addToCart = this.addToCart.bind(this);
     this.notInCart = this.notInCart.bind(this);
-    this.getAttribute=this.getAttribute.bind(this)
-  }
-  getAttribute(){
-
+  
   }
 
   checkAmountInCurrency(item) {
@@ -198,7 +195,7 @@ class Main extends Component {
         `,
       })
       .then((result) => {
-        //dispatch action to add data to store
+        //dispatch action to category reducer
         this.props.fetchData(result.data);
         const { allCategories, loading } = this.props.category_state;
         this.setState({
@@ -233,31 +230,6 @@ class Main extends Component {
                 <div><strong>Price: </strong>
                   {this.props.currency}
                   {this.checkAmountInCurrency(item).amount}
-                </div>
-                <div className="attributes">
-                  {
-                    // some attributes are empty
-                    item.attributes.length > 0? 
-                      item.attributes.map((attribute) => {
-                          return attribute.type == "text"? 
-                              <div className="attribute" >{                                                      
-                                 [<div className="attribute-name">{attribute.name}</div>].concat(attribute.items.map((item) => {
-                                return (<div key={item.value}><label ><input  type="radio" name={attribute.name} value={item.value}/>
-                                      {item.value}</label></div>);
-                              }))
-                            }</div>
-                            :
-                            <div className="attribute">{
-                            [<div className="attribute-name">{attribute.name}</div>].concat(attribute.items.map((item) => {
-                                return (<div className="color-attribute"  key={item.value}>
-                                    <input type={"radio"} name={attribute.name} value={item.value}/>
-                                    <div className="color-item" style={{ backgroundColor: item.value }} ></div>
-                                  </div>
-                                );
-                              })) }</div>                         
-                        })
-                      : ""
-                  }
                 </div>
                 <div
                   className="add-to-cart-button"
