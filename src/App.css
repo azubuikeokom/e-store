@@ -182,6 +182,7 @@ select{
   background-color: #51ff9a;
   border: 0;
   cursor: pointer;
+  
 }
 .product-details button:hover{
   background-color:#016b2d ;
@@ -207,15 +208,13 @@ footer div{
 .cart-page{
   margin-left: 2rem;
   margin-bottom: 2rem;
+
 }
 .cart-container{
-  display: flex;
-  justify-content: space-between;
-  /* height: 100vh; */
   padding: 1rem;
 }
 .cart-list{
-  width: 60%;
+ height: 100%; 
 }
 .add-to-cart{
   background-color: #FFD365;
@@ -231,15 +230,52 @@ footer div{
   display: flex;
   justify-content: space-between;
   border-top: solid 1px rgb(180, 180, 180);
+  height: 200px;
   
 }
-.cart-item img{
-  height: 100%;
-}
+
 .product-image-div{
   margin-left: .5rem;
   width: 200px;
-  height: 100px;
+ 
+}
+.slides-container{
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.slide{
+  position:absolute;
+  transition: all 0.5s;
+}
+.slide img{
+  width: 100%;
+  height: 180px;
+  padding: 0 1rem;
+}
+.btn{
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  z-index: 10;
+  font-weight: bold;
+  border-radius: 50%;
+  background-color: #f3f1f1;
+}
+.btn:active{
+  transform: scale(1.1);
+}
+.btn-prev{
+  top: 45%;
+  left: .1rem;
+}
+.btn-next{
+  top: 45%;
+  right: .1rem;
 }
 .product-qty{
   display: flex;
@@ -281,6 +317,7 @@ footer div{
 }
 .cart-check-out{
   margin-left: 1rem;
+  margin-top: 2rem;
 }
 .cart-total-row-value{
   font-weight: bold;
