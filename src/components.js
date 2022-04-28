@@ -42,10 +42,12 @@ class Header extends Component {
       const cartOverlay = document.querySelector(".cart-overlay-container");
       cartOverlay.style.display = "block";
       this.setState({ cart_display: false });
+      this.props.showViewBag(true)
     } else {
       const cartOverlay = document.querySelector(".cart-overlay-container");
       cartOverlay.style.display = "none";
       this.setState({ cart_display: true });
+      this.props.showViewBag(false)
     }
   }
   //dispatch action here to avoid sending the default state value
@@ -65,13 +67,19 @@ class Header extends Component {
           <nav>
             <ul>
               <li>
-                <input type={"button"} className="tab-link" id="all" value={"ALL"} onClick={this.selectTab}></input>
+                <Link to={"/"}>
+                  <input type={"button"} className="tab-link" id="all" value={"ALL"} onClick={this.selectTab}></input>
+                </Link>
               </li>
               <li>
-                <input type={"button"} className="tab-link" id="tech" value={"TECH"} onClick={this.selectTab}></input>
+                <Link to={"/"}>
+                  <input type={"button"} className="tab-link" id="tech" value={"TECH"} onClick={this.selectTab}></input>
+                </Link> 
               </li>
               <li>
+              <Link to={"/"}>
                 <input type={"button"} className="tab-link" id="clothes" value={"CLOTHES"} onClick={this.selectTab}></input>
+              </Link>
               </li>
             </ul>
           </nav>
