@@ -37,7 +37,7 @@ class App extends Component {
           <WrappedHeader qty={this.state.qty} showTab={this.showTab}/>
           <div className="cart-overlay-container">
           <div className="cart-overlay">
-            <Cart />
+            <Cart renderQty={this.renderQty}/>
           </div>
         </div>
          <Routes>
