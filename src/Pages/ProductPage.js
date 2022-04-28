@@ -25,13 +25,12 @@ class ProductPage extends Component {
       },
     };
     this.id = window.location.pathname.split("/")[2];
-    this.cartProduct.product = this.props.products.find(
-      (item) => item.id == this.id
-    );
+    this.cartProduct.product = this.props.products.find((item) => item.id == this.id);
     this.addToCart = this.addToCart.bind(this);
     this.checkAmountInCurrency = this.checkAmountInCurrency.bind(this);
     this.handleImageClick = this.handleImageClick.bind(this);
-    this.selectAttribute = this.selectAttribute.bind(this);
+    this.selectTextAttribute = this.selectTextAttribute.bind(this);
+    this.selectColorAttribute=this.selectColorAttribute.bind(this);
     this.getAttributesCount = this.getAttributesCount.bind(this);
 
   }
@@ -40,13 +39,52 @@ class ProductPage extends Component {
       attributes_no: this.cartProduct.product.attributes.length,
     });
   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevState.attributes_no != this.state.attributes_no) {
-  //     console.log("attribute number", this.state.attributes_no);
-  //   }
-  // }
-  selectAttribute(attribute_name, item) {
-    this.cartProduct.orderProduct.attributes.push({[attribute_name]: item.value});
+  selectColorAttribute(attribute_name, item, index) {
+    // if no attribute has been selected
+    if(this.cartProduct.orderProduct.attributes.length==0){
+      this.cartProduct.orderProduct.attributes.push({[attribute_name]: item.value});
+    } 
+    // if an attribute has already been selected, check if attribute name exits,
+    //if so replace else add new selected attribute value
+   else{
+      const found_attribute=this.cartProduct.orderProduct.attributes.find(attribute=>Object.keys(attribute)==attribute_name);
+      found_attribute ? found_attribute[attribute_name]=item.value:
+      this.cartProduct.orderProduct.attributes.push({[attribute_name]: item.value});
+
+    }
+    console.log("orderProduct attribute",this.cartProduct.orderProduct.attributes)
+    const all_values=document.querySelectorAll(".color-item")
+    all_values.forEach(each_value=>{
+      //if another item has its border colored, clear
+      if(each_value.tabIndex!=index){
+        each_value.style.border=""
+      }
+    })
+
+  }
+  selectTextAttribute(attribute_name, item, index) {
+      // if no attribute has been selected
+    if(this.cartProduct.orderProduct.attributes.length==0){
+      this.cartProduct.orderProduct.attributes.push({[attribute_name]: item.value});
+    } 
+    // if an attribute has already been selected, check if attribute name exits,
+    //if so replace else add new selected attribute value
+   else{
+      const found_attribute=this.cartProduct.orderProduct.attributes.find(attribute=>Object.keys(attribute)==attribute_name);
+      found_attribute ? found_attribute[attribute_name]=item.value:
+      this.cartProduct.orderProduct.attributes.push({[attribute_name]: item.value});
+
+    }
+    console.log("orderProduct attribute",this.cartProduct.orderProduct.attributes)
+    //this will highlight the attributes
+    const all_values=document.querySelectorAll(".text-item")
+    all_values.forEach(each_value=>{
+      //if another item has its background colored, clear, and set font back to black
+      if(each_value.tabIndex!=index){
+        each_value.style.backgroundColor=""
+        each_value.style.color="black" 
+      }
+    })
 
   }
 
@@ -61,7 +99,7 @@ class ProductPage extends Component {
     this.setState({ image: e.target.src });
   }
   addToCart = (e) => {
-    if(this.cartProduct.product.attributes.length ==this.cartProduct.orderProduct.attributes.length)
+    if(this.cartProduct.product.attributes.length ==this.cartProduct.orderProduct.attributes.length){
       if (this.notInCart(this.cartProduct.product.id)) {
         //check if item is already in cart
         //dispatch to reducer
@@ -75,9 +113,14 @@ class ProductPage extends Component {
         this.cartProduct.orderProduct.image = this.cartProduct.product.gallery[0];
         //add to cart
         this.props.addItem(this.cartProduct);
-      } else {
+        
+      } 
+      else {
         return;
       }
+    }
+      
+      
   };
   notInCart(id) {
     const cartOldItem = this.props.cartItems.find((item) => item.id == id);
@@ -135,7 +178,9 @@ class ProductPage extends Component {
                           .concat(attribute.items.map((item, index) => {
                               return (
                                 <div className="text-item"key={item.value} tabIndex={index} onClick={(e) => {
-                                    this.selectAttribute(attribute.name, item);
+                                    e.target.style.backgroundColor="black" 
+                                    e.target.style.color="white" 
+                                    this.selectTextAttribute(attribute.name, item, index);
                                   }}>{item.value}</div>);
                             })
                           )}</div>)
@@ -150,7 +195,8 @@ class ProductPage extends Component {
                                   tabIndex={index}
                                   style={{ backgroundColor: item.value }}
                                   onClick={(e) => {
-                                    this.selectAttribute(attribute.name, item);
+                                    e.target.style.border="2px solid #83BD77" 
+                                    this.selectColorAttribute(attribute.name, item,index);
                                   }}
                                 ></div>
                               );
@@ -175,8 +221,8 @@ class ProductPage extends Component {
           </Link>
           <div className="description">
             {
-              (this.state.des_tag.innerHTML =
-                this.cartProduct.product.description)
+              
+               (this.state.des_tag.innerHTML=this.cartProduct.product.description)
             }
           </div>
         </div>

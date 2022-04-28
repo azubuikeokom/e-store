@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { removeItem, setCurrency } from "../actions";
 
 class CartPage extends Component {
@@ -41,19 +42,25 @@ class CartPage extends Component {
         <div className="cart-container">
           <div className="cart-list">
             {this.props.cartItems.map((item) => {
+              const orderItem=this.props.orderItems.find(orderItem=>orderItem.id==item.id)
               return <ListItem item={item} checkAmountInCurrency={this.checkAmountInCurrency}
               removeItem={this.removeItem}  increment={this.increment} reRender={this.reRender}
-              decrement={this.decrement} orderItems={this.props.orderItems}/>;
+               currency={this.props.currency}  orderItem={orderItem}
+              decrement={this.decrement} orderItems={this.props.orderItems} renderQty={this.props.renderQty}/>;
             })}
           </div>
         </div>
         <div className="cart-check-out">
           <div>
             <span className="cart-total-row-name">Tax: </span>
-            <span className="cart-total-row-value">{this.props.currency} </span>
+            <span className="cart-total-row-value">{this.props.currency}15 </span>
           </div>
           <div>
-            <span className="cart-total-row-name">Qty:</span>
+            <span className="cart-total-row-name">Qty:{
+              this.props.orderItems.reduce((total_qty,current_order_item)=>{
+                return total_qty+=current_order_item.qty;
+              },0)
+            }</span>
             <span className="cart-total-row-value"></span>
           </div>
           <div>
@@ -64,6 +71,12 @@ class CartPage extends Component {
             </span>
           </div>
           <button className="order-btn">ORDER</button>
+        </div>
+        <div className="overly-checkout">
+          <Link to={"/cart"}>
+          <button className="view-bag">VIEW BAG</button>
+          </Link>
+          <button className="overlay-order-btn">CHECK OUT</button>
         </div>
       </div>
     );
@@ -76,21 +89,28 @@ class ListItem extends Component {
       qty: 1,
       //mouse enter return cart item id
       cartItem_id: 0,
+      max_slide:0,
       slide_count:0
     };
     this.prevSlide=this.prevSlide.bind(this)
     this.nextSlide=this.nextSlide.bind(this)
     this.increment = this.increment.bind(this);
     this.decrement = this.decrement.bind(this);
-    this.selectAttribute = this.selectAttribute.bind(this);
     this.setState_id = this.setState_id.bind(this);
+    this.selectTextAttribute = this.selectTextAttribute.bind(this);
+    this.selectColorAttribute=this.selectColorAttribute.bind(this)
   }
   prevSlide(e){
-    
-   this.setState({slide_count:this.state.slide_count-1})
+    if(this.state.slide_count!=0){
+      this.setState({slide_count:this.state.slide_count-1})
+     } 
+     
   }
   nextSlide(e){
-   this.setState({slide_count:this.state.slide_count+1})
+   if(this.state.max_slide!=this.state.slide_count){
+    this.setState({slide_count:this.state.slide_count+1})
+   } 
+   
    
   }
   increment(id) {
@@ -98,10 +118,12 @@ class ListItem extends Component {
       if (item.id == id) {
         item.qty += 1;
         this.setState({qty:item.qty})
-        console.log(item.qty);
       }
-    });
+      return item;
+    }
+    );
     this.props.reRender()
+    this.props.renderQty()
   }
   decrement(id) {
     this.props.orderItems.map((item) => {
@@ -109,30 +131,68 @@ class ListItem extends Component {
         if (item.qty > 1) {
           item.qty -= 1;
           this.setState({qty:item.qty})
-          console.log(item.qty);
         }
       }
+      return item;
     });
     this.props.reRender()
+    this.props.renderQty()
   }
   setState_id(item_id) {
     this.setState({ cartItem_id: item_id });
   }
-  selectAttribute(attribute_name, item) {
-    //iterate over all order items
-    this.props.orderItems.map((order_item) => {
+
+  selectColorAttribute(attribute_name, item, index) {
+      //iterate over all order items
+      this.props.orderItems.map((order_item) => {
       //check if cart-item's id is same with order-items id
       if (this.state.cartItem_id == order_item.id) {
-        order_item.attributes.map((attrib) => {
-          if (attribute_name in attrib) {
-            attrib[attribute_name] = item.value;
-          }
-        });
-      }
-      return order_item;
-    });
-  }
+        //find attribute name and replace value
+        const found_attribute=order_item.attributes.find(attribute=>Object.keys(attribute)==attribute_name);
+        found_attribute[attribute_name]=item.value;  
+       }
+       return order_item;
+      })
+  
 
+    console.log("orderProduct attribute",this.props.orderItems)
+    const all_values=document.querySelectorAll(".color-item")
+    all_values.forEach(each_value=>{
+      //if another item has its border colored, clear
+      if(each_value.tabIndex!=index){
+        each_value.style.border=""
+      }
+    })
+
+  }
+  selectTextAttribute(attribute_name, item, index) {
+      //iterate over all order items
+      this.props.orderItems.map((order_item) => {
+        //check if cart-item's id is same with order-items id
+        if (this.state.cartItem_id == order_item.id) {
+          //find attribute name and replace value
+          const found_attribute=order_item.attributes.find(attribute=>Object.keys(attribute)==attribute_name);
+          found_attribute[attribute_name]=item.value;  
+         }
+         return order_item;
+        })
+    
+  
+      console.log("orderProduct attribute",this.props.orderItems)
+    //this will highlight the attributes
+    const all_values=document.querySelectorAll(".text-item")
+    all_values.forEach(each_value=>{
+      //if another item has its background colored, clear, and set font back to black
+      if(each_value.tabIndex!=index){
+        each_value.style.backgroundColor=""
+        each_value.style.color="black" 
+      }
+    })
+
+  }
+componentDidMount(){
+  this.setState({max_slide:this.props.item.gallery.length-1})
+}
   render() {
     return (
       <div
@@ -146,7 +206,9 @@ class ListItem extends Component {
             <strong>{this.props.item.name}</strong>
           </div>
           <div className="details-price">
-            {this.props.currency} {this.props.checkAmountInCurrency(this.props.item).amount}
+            {this.props.currency} {
+            this.props.orderItem.price=this.props.checkAmountInCurrency(this.props.item).amount
+            }
           </div>
           <div className="attributes">
             {
@@ -164,7 +226,7 @@ class ListItem extends Component {
                                 key={item.value}
                                 tabIndex={index}
                                 onClick={(e) => {
-                                  this.selectAttribute(attribute.name, item);
+                                  this.selectTextAttribute(attribute.name, item,index);
                                 }}>{item.value}</div>
                             );
                           })
@@ -181,7 +243,7 @@ class ListItem extends Component {
                                 tabIndex={index}
                                 style={{ backgroundColor: item.value }}
                                 onClick={(e) => {
-                                  this.selectAttribute(attribute.name, item);
+                                  this.selectColorAttribute(attribute.name, item,index);
                                 }}></div>
                             );
                           })
