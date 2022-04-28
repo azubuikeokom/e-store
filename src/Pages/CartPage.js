@@ -35,6 +35,7 @@ class CartPage extends Component {
   render() {
     console.log("global cart items", this.props.cartItems);
     console.log("order items", this.props.orderItems);
+    this.props.renderQty(this.props.orderItems)
 
     return (
       <div className="cart-page">
@@ -63,7 +64,11 @@ class CartPage extends Component {
         <div className="cart-check-out">
           <div>
             <span className="cart-total-row-name">Tax: </span>
-            <span className="cart-total-row-value">{this.props.currency}15 </span>
+            <span className="cart-total-row-value">{this.props.currency}
+            {
+              this.props.orderItems.length>0?15:""
+            }
+             </span>
           </div>
           <div>
             <span className="cart-total-row-name">
@@ -133,7 +138,7 @@ class ListItem extends Component {
       return item;
     });
     this.props.reRender();
-    this.props.renderQty();
+    this.props.renderQty(this.props.orderItems);
   }
   decrement(id) {
     this.props.orderItems.map((item) => {
@@ -146,7 +151,7 @@ class ListItem extends Component {
       return item;
     });
     this.props.reRender();
-    this.props.renderQty();
+    this.props.renderQty(this.props.orderItems);
   }
   setState_id(item_id) {
     this.setState({ cartItem_id: item_id });
@@ -301,7 +306,7 @@ class ListItem extends Component {
           <div
             className="remove-btn"
             onClick={() => {
-              this.props.removeItem(this.props.item.id);
+              this.props.removeItem(this.props.item.id)
             }}
           >
             <div>X</div>

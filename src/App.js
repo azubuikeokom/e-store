@@ -26,13 +26,15 @@ class App extends Component {
     this.setState({ tabName: name });
   }
   //sends qty to header to be re-rendered on update of state when method is called
-  renderQty() {
+  renderQty(orderItems) {
     this.setState({
-      qty: this.props.orderItems.reduce((total_qty, current_order_item) => {
+      qty: orderItems.reduce((total_qty, current_order_item) => {
         return (total_qty += current_order_item.qty);
-      }, 0),
+      }, 0)
     });
+ 
   }
+ 
 
   render() {
     return (
@@ -45,7 +47,7 @@ class App extends Component {
             </div>
           </div>
           <Routes>
-            <Route path="/products/:id" element={<ProductPage />} />
+            <Route path="/products/:id" element={<ProductPage renderQty={this.renderQty}/>} />
             <Route path="/cart" element={<CartPage renderQty={this.renderQty} />} />
             <Route path="/" exact={true} element={<WrappedMain renderQty={this.renderQty} tabName={this.state.tabName} showTab={this.showTab} />} />
           </Routes>

@@ -52,7 +52,6 @@ class ProductPage extends Component {
       this.cartProduct.orderProduct.attributes.push({[attribute_name]: item.value});
 
     }
-    console.log("orderProduct attribute",this.cartProduct.orderProduct.attributes)
     const all_values=document.querySelectorAll(".color-item")
     all_values.forEach(each_value=>{
       //if another item has its border colored, clear
@@ -75,7 +74,6 @@ class ProductPage extends Component {
       this.cartProduct.orderProduct.attributes.push({[attribute_name]: item.value});
 
     }
-    console.log("orderProduct attribute",this.cartProduct.orderProduct.attributes)
     //this will highlight the attributes
     const all_values=document.querySelectorAll(".text-item")
     all_values.forEach(each_value=>{
@@ -119,7 +117,7 @@ class ProductPage extends Component {
         return;
       }
     }
-      
+     this.props.renderQty(this.props.orderItems) 
       
   };
   notInCart(id) {

@@ -38,17 +38,22 @@ class Header extends Component {
     this.setState({ symbol: e.target.value });
   }
   showOverLayCart() {
-    if (this.state.cart_display) {
-      const cartOverlay = document.querySelector(".cart-overlay-container");
-      cartOverlay.style.display = "block";
-      this.setState({ cart_display: false });
-      this.props.showViewBag(true)
-    } else {
-      const cartOverlay = document.querySelector(".cart-overlay-container");
-      cartOverlay.style.display = "none";
-      this.setState({ cart_display: true });
-      this.props.showViewBag(false)
-    }
+    
+      if (this.state.cart_display) {
+        if(this.props.orderItems.length>0){
+          const cartOverlay = document.querySelector(".cart-overlay-container");
+          cartOverlay.style.display = "block";
+          this.setState({ cart_display: false });
+          this.props.showViewBag(true)
+        }
+      } else {
+        const cartOverlay = document.querySelector(".cart-overlay-container");
+        cartOverlay.style.display = "none";
+        this.setState({ cart_display: true });
+        this.props.showViewBag(false)
+      }
+    
+    
   }
   //dispatch action here to avoid sending the default state value
   componentDidUpdate(prevProps, prevState) {
@@ -348,7 +353,7 @@ class Product extends Component {
         //add to cart
         this.props.addItem(this.cartProduct);
         //this renders the header cart logo count value
-        this.props.renderQty();
+        this.props.renderQty(this.props.orderItems);
       } else {
         return;
       }
