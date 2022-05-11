@@ -42,16 +42,18 @@ class Product extends PureComponent {
               [attribute_name]: item.value,
             });
       }
-      console.log("orderProduct ", this.cartProduct.orderProduct);
       const all_values = document.querySelectorAll(".color-item");
       all_values.forEach((each_value) => {
         //if another item has its border colored, clear
+        //tabIndex and index are both used to check which attribute doesn't have focus and not clicked
         if (each_value.tabIndex != index) {
           each_value.style.border = "";
         }
       });
     }
     selectTextAttribute(attribute_name, item, index) {
+        this.cartProduct.product.selected=item.value;
+        console.log("selected value",this.cartProduct.product.selected);
       // if no attribute has been selected
       if (this.cartProduct.orderProduct.attributes.length == 0) {
         this.cartProduct.orderProduct.attributes.push({
@@ -68,11 +70,11 @@ class Product extends PureComponent {
               [attribute_name]: item.value,
             });
       }
-      console.log("orderProduct ", this.cartProduct.orderProduct);
       //this will highlight the attributes
       const all_values = document.querySelectorAll(".text-item");
       all_values.forEach((each_value) => {
         //if another item has its background colored, clear, and set font back to black
+        //tabIndex and index are both used to check which attribute doesn't have focus and not clicked
         if (each_value.tabIndex != index) {
           each_value.style.backgroundColor = "";
           each_value.style.color = "black";
@@ -154,8 +156,7 @@ class Product extends PureComponent {
                                   e.target.style.backgroundColor = "black";
                                   e.target.style.color = "white";
                                   this.selectTextAttribute(attribute.name, item, index);
-                                }}
-                              >
+                                }}>
                                 {item.value}
                               </div>
                             );

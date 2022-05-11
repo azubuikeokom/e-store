@@ -2,7 +2,7 @@ import { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { fetchData, setCurrency, addItem } from "../actions";
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+
 
 class Header extends Component {
     constructor(props) {

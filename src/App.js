@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { PureComponent } from "react";
 import { WrappedMain } from "./components/main";
 import { WrappedHeader } from "./components/header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -8,7 +8,7 @@ import ProductPage from "./pages/ProductPage";
 import Cart from "./pages/CartPage";
 import { connect } from "react-redux";
 
-class App extends Component {
+class App extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {

@@ -1,16 +1,13 @@
-import { Component } from "react";
-import { Link } from "react-router-dom";
+import { PureComponent } from "react";
 import { connect } from "react-redux";
 import SearchCategoryName from "./search";
 import AllTabPage from "../tabcomponents/allTabPage";
 import TechTabPage from "../tabcomponents/techTabPage";
-import ClothesPage from "../tabcomponents/clothesTabPage";
+import ClothesTabPage from "../tabcomponents/clothesTabPage";
 import { fetchData, setCurrency, addItem } from "../actions";
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
-import ClothesTabPage from "../tabcomponents/clothesTabPage";
 
-
-class Main extends Component {
+class Main extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -102,7 +99,6 @@ class Main extends Component {
     this.props.showTab("all");
   }
   render() {
-    console.log(this.state.current);
     return this.state.loading ? (
       <p>Loading...</p>
     ) : (
