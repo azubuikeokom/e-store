@@ -1,10 +1,11 @@
 import { Component } from "react";
-import { WrappedHeader, Footer, WrappedMain } from "./components";
+import { WrappedMain } from "./components/main";
+import { WrappedHeader } from "./components/header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import CartPage from "./Pages/CartPage";
-import ProductPage from "./Pages/ProductPage";
-import Cart from "./Pages/CartPage";
+import CartPage from "./pages/CartPage";
+import ProductPage from "./pages/ProductPage";
+import Cart from "./pages/CartPage";
 import { connect } from "react-redux";
 
 class App extends Component {
